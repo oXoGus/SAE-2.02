@@ -11,7 +11,7 @@ def deterministe(auto):
     # un auto est dét si 
 
     # il a 1 seul état inial 
-    if len(auto["I"]) != 1:
+    if len(auto['I']) != 1:
         return False
     
     # et si pour tout état q 
@@ -88,7 +88,7 @@ def determinise(auto):
         
         
     
-    return autoDet
+    return renommage(autoDet)
 
 
 def marquer(etatsActif : list, auto, autoDet):
@@ -183,7 +183,9 @@ if __name__ == "__main__":
 
     import doctest
 
-    doctest.testmod(verbose=1)
+    from genAuto import genAuto
+
+    #doctest.testmod(verbose=1)
     
     
     auto0 ={"alphabet":['a','b'],"etats": [0,1,2,3], "transitions":[[0,'a',1],[1,'a',1],[1,'b',2],[2,'a',3]], "I":[0],"F":[3]}
@@ -192,6 +194,8 @@ if __name__ == "__main__":
     
     auto2={"alphabet":['a','b'],"etats": [0,1], "transitions":[[0,'a',0],[0,'a',1],[1,'b',1],[1,'a',1]], "I":[0],"F":[1]}   
 
-    print(determinise(auto2))
+    #print(determinise(auto2))
 
-    print(renommage(determinise(auto2)))
+    #print(renommage(determinise(auto2)))
+
+    print(deterministe(determinise(genAuto())))
