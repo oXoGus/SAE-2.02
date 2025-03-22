@@ -106,6 +106,8 @@ def difference(auto1, auto2):
 
     return renommage(auto)
 
+    
+
 if __name__ == "__main__":
 
     from genAuto import genAuto

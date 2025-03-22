@@ -1,4 +1,4 @@
-#Toutes les fonctions ont été vérifiées
+from determinisation import *
 
 def complet(auto) : 
     """ Algorithme : 
@@ -6,7 +6,7 @@ def complet(auto) :
     On fait ensuite une boucle for dans laquelle on vérifie grâce à un filter que chaque lettre contienne tout l'alphabet
     S'ils ne sont pas tous dans l'alphabet, alors on s'arrête la et on return false, sinon on continue et à le fin on return true"""
     if all(list(map(lambda x, y: x==y, auto["transitions"][0], auto["etats"]))) : 
-        return false 
+        return False 
     #Pour chaque etat 
     for etat in auto["etats"] : 
         #Liste contenant les lettres des transitions de l'etat 
@@ -45,7 +45,6 @@ def complete (auto) :
 def complement (auto) :
     detAuto=determinise(auto)
     detAuto=complete(detAuto)
-    print("determinisé : ", detAuto)
     compAuto={}
     compAuto['alphabet']=detAuto['alphabet'].copy()
     compAuto['etats']=detAuto['etats'].copy()
@@ -54,7 +53,6 @@ def complement (auto) :
     lst=[]
     for newFinaux in detAuto['etats'] : 
         if newFinaux!=detAuto['F'][0]:
-            print(newFinaux, detAuto["F"])
             lst.append(newFinaux)
     compAuto['F']=lst
     return compAuto
@@ -69,9 +67,6 @@ if __name__ == '__main__' :
 "transitions":[[0,'a',0],[0,'b',1],[1,'b',1],[1,'a',1]], "I":[0],"F":[1]}
     auto3 ={"alphabet":['a','b'],"etats": [0,1,2],
     "transitions":[[0,'a',1],[0,'a',0],[1,'b',2],[1,'b',1]], "I":[0],"F":[2]}
-
-
-    from determinisation import determinise, deterministe, renommage, marquer
 
 
     print("complet", complement(auto3))
