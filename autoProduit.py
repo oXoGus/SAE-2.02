@@ -1,6 +1,8 @@
 from determinisation import * 
+from complementation import *
 
 def autoProd(auto1, auto2):
+
 
     # on créé l'auto produit
     autoProd = {
@@ -75,6 +77,12 @@ def point(auto, etat, etiquette):
 
 
 def inter(auto1, auto2):
+    """
+    >>> auto4 ={"alphabet":['a','b'],"etats": [0,1,2], "transitions":[[0,'a',1],[1,'b',2],[2,'b',2],[2,'a',2]], "I":[0],"F":[2]}
+    >>> auto5 ={"alphabet":['a','b'],"etats": [0,1,2], "transitions":[[0,'a',0],[0,'b',1],[1,'a',1],[1,'b',2],[2,'a',2],[2,'b',0]], "I":[0],"F":[0,1]}
+    >>> inter(auto4, auto5) == renommage({'alphabet': ['a', 'b'], 'I': [(0, 0)], 'transitions': [[(0, 0), 'a', (1, 0)],[(1, 0), 'b', (2, 1)], [(2, 1), 'a', (2, 1)], [(2, 1), 'b', (2, 2)],[(2, 2), 'a', (2, 2)], [(2, 2), 'b', (2, 0)], [(2, 0), 'a', (2, 0)],[(2, 0), 'b', (2, 1)]],'etats': [(0, 0), (1, 0), (2, 1), (2, 2), (2, 0)], 'F': [(2, 0), (2, 1)]})
+    True
+    """
     
     # on déterminise les deux auto
     auto1 = determinise(auto1)
@@ -85,35 +93,64 @@ def inter(auto1, auto2):
 
     # on met dans F les et etats (F1, F2)
     auto['F'] = list(filter(lambda etats: etats[0] in auto1['F'] and etats[1] in auto2['F'], auto['etats']))
-
+    
+    # pour que le auto['F] est = à celui dans l'exemple 
+    auto['F'] = sorted(auto['F'], key=lambda etats: etats[1]) 
+    
     return renommage(auto)
 
 def difference(auto1, auto2):
-    
+    """
+    >>> auto4 ={"alphabet":['a','b'],"etats": [0,1,2], "transitions":[[0,'a',1],[1,'b',2],[2,'b',2],[2,'a',2]], "I":[0],"F":[2]} 
+    >>> auto5 ={"alphabet":['a','b'],"etats": [0,1,2], "transitions":[[0,'a',0],[0,'b',1],[1,'a',1],[1,'b',2],[2,'a',2],[2,'b',0]], "I":[0],"F":[0,1]}
+    >>> toSet(difference(auto4,auto5)) == toSet({'alphabet': ['a', 'b'], 'I': [(0, 0)], 'transitions': [[(0, 0), 'a', (1, 0)], [(0, 0), 'b', (3, 1)], [(3, 1), 'a', (3, 1)], [(3, 1), 'b', (3, 2)], [(3, 2), 'a', (3, 2)], [(3, 2), 'b', (3, 0)], [(3, 0), 'a', (3, 0)], [(3, 0), 'b',(3, 1)], [(1, 0), 'a', (3, 0)], [(1, 0), 'b', (2, 1)], [(2, 1), 'a', (2, 1)], [(2, 1), 'b', (2, 2)], [(2, 2), 'a', (2, 2)], [(2, 2), 'b', (2, 0)], [(2, 0), 'a', (2, 0)], [(2, 0), 'b', (2, 1)]], 'etats': [(0, 0), (3, 1), (3, 2), (3, 0), (1, 0), (2, 1), (2, 2), (2, 0)], 'F': [(2, 2)]})
+    True
+    """
     # on déterminise les deux auto
     auto1 = determinise(auto1)
     auto2 = determinise(auto2)
 
     # on les completes aussi
-    #auto1 = complet(auto1)
-    #auto2 = complet(auto2)
-
+    auto1 = complete(auto1)
+    auto2 = complete(auto2)
+    
     # on fait l'automate produit 
     auto = autoProd(auto1, auto2)
 
     # on met dans F les et etats (F1, not F2)
     auto['F'] = list(filter(lambda etats: etats[0] in auto1['F'] and etats[1] not in auto2['F'], auto['etats']))
 
-    return renommage(auto)
+    return auto
 
-    
+
+def toSet(auto):
+    """
+    transforme tout les listes en set pour que 
+    l'ordre des élément ne rendent pas a comparaison des deux auto faux
+    """
+    # marche que sur un automate déja renomé (pas de liste de liste)
+    auto['alphabet'] = set(auto['alphabet'])
+    auto['I'] = set(auto['I'])
+    auto['F'] = set(auto['F'])
+    auto['transitions'] = set(map(lambda transi: tuple(transi), auto['transitions']))
+    auto['etats'] = set(auto['etats'])
+    return auto
+
+
 
 if __name__ == "__main__":
 
     from genAuto import genAuto
 
-    auto4 ={"alphabet":['a','b'],"etats": [0,1,2,], "transitions":[[0,'a',1],[1,'b',2],[2,'b',2],[2,'a',2]], "I":[0],"F":[2]}
+    auto4 ={"alphabet":['a','b'],"etats": [0,1,2], "transitions":[[0,'a',1],[1,'b',2],[2,'b',2],[2,'a',2]], "I":[0],"F":[2]}
 
     auto5 ={"alphabet":['a','b'],"etats": [0,1,2], "transitions":[[0,'a',0],[0,'b',1],[1,'a',1],[1,'b',2],[2,'a',2],[2,'b',0]], "I":[0],"F":[0,1]}
 
-    print(inter(auto4, auto5))
+    diff = difference(auto4, auto5)
+    
+    test = {'alphabet': ['a', 'b'], 'I': [(0, 0)], 'transitions': [[(0, 0), 'a', (1, 0)], [(0, 0), 'b', (3, 1)], [(3, 1), 'a', (3, 1)], [(3, 1), 'b', (3, 2)], [(3, 2), 'a', (3, 2)], [(3, 2), 'b', (3, 0)], [(3, 0), 'a', (3, 0)], [(3, 0), 'b',(3, 1)], [(1, 0), 'a', (3, 0)], [(1, 0), 'b', (2, 1)], [(2, 1), 'a', (2, 1)], [(2, 1), 'b', (2, 2)], [(2, 2), 'a', (2, 2)], [(2, 2), 'b', (2, 0)], [(2, 0), 'a', (2, 0)], [(2, 0), 'b', (2, 1)]], 'etats': [(0, 0), (3, 1), (3, 2), (3, 0), (1, 0), (2, 1), (2, 2), (2, 0)], 'F': [(2, 2)]}
+    #print(set(map(lambda transi: tuple(transi), test['transitions'])) == set(map(lambda transi: tuple(transi), diff['transitions'])))
+    #print(set(test['etats']) == set(diff['etats']))
+    import doctest
+    
+    doctest.testmod(verbose=1)

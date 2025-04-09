@@ -7,10 +7,15 @@ import copy
 
 
 def minimise(auto):
+    """
+    >>> auto6 ={"alphabet":['a','b'],"etats": [0,1,2,3,4,5], "transitions":[[0,'a',4],[0,'b',3],[1,'a',5],[1,'b',5],[2,'a',5],[2,'b',2],[3,'a',1],[3,'b',0], [4,'a',1],[4,'b',2],[5,'a',2],[5,'b',5]], "I":[0],"F":[0,1,2,5]}
+    >>> minimise(auto6) == {'alphabet': ['a', 'b'], 'etats': [0, 1, 2, 3], 'transitions': [[0, 'a', 3], [0, 'b', 2], [1, 'a', 1], [1, 'b', 1], [2, 'a', 1], [2, 'b', 0], [3, 'a', 1], [3, 'b', 1]], 'I': [0], 'F': [0, 1]}
+    True
+    """
     
     # on déterminise et complete l'automate 
     auto = determinise(auto)
-    # auto = complement(auto)
+    auto = complete(auto)
 
     # on calcules les classes de cet auto
     classes = equivalenceDeNerode(auto)
@@ -50,7 +55,7 @@ def minimise(auto):
         for a in nAuto['alphabet']:
             nAuto['transitions'].append([etat, a, pointMinim(auto, etat, a, nAuto)])
 
-    return nAuto
+    return renommage(nAuto)
         
 
 def pointMinim(auto, etat, etiquette, nAuto):
@@ -74,21 +79,18 @@ def equivalenceDeNerode(auto):
     # liste contenant la liste de tout les états terminaux
     prevClasses = [[etat for etat in auto['etats'] if etat in auto['F']]]
     
-    print(prevClasses, auto)
     # et tout les états non terminaux
     prevClasses.append([etat for etat in auto['etats'] if etat not in auto['F']])
 
-    print(prevClasses)
 
     classes = calcNextClasse(prevClasses, auto)
 
-    print(classes)
 
     # on s'arrete lorsque qu'on trouve deux fois les memes classes d'affilé 
     while prevClasses != classes:
         prevClasses = classes
         classes = calcNextClasse(prevClasses, auto)
-        print(classes)
+        
 
     # on renvoie les classes definitives
     return classes
@@ -167,10 +169,9 @@ if __name__ == "__main__":
         "F":[5, 6]
     }
 
-    auto6 ={"alphabet":['a','b'],"etats": [0,1,2,3,4,5],
-    "transitions":[[0,'a',4],[0,'b',3],[1,'a',5],[1,'b',5],[2,'a',5],[2,'b',2],[3,'a',1],[3,'b',0],
-    [4,'a',1],[4,'b',2],[5,'a',2],[5,'b',5]],
-    "I":[0],"F":[0,1,2,5]}
+    auto6 ={"alphabet":['a','b'],"etats": [0,1,2,3,4,5], "transitions":[[0,'a',4],[0,'b',3],[1,'a',5],[1,'b',5],[2,'a',5],[2,'b',2],[3,'a',1],[3,'b',0], [4,'a',1],[4,'b',2],[5,'a',2],[5,'b',5]], "I":[0],"F":[0,1,2,5]}
 
-    print(renommage(minimise(auto6)))    
-    
+    #print(renommage(minimise(auto6)))    
+    import doctest
+
+    doctest.testmod(verbose=1)    

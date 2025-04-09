@@ -2,6 +2,10 @@
 #Toutes les fonctions ont été vérifiées
 #Définition de la fonction pref qui reçoit un mot et retourne tous ses prefixes
 def pref(mot) : 
+    """
+    >>> print(pref("coucou"))
+    ['', 'c', 'co', 'cou', 'couc', 'couco', 'coucou']
+    """
     #On initialise la liste qui va contenir les prefixes
     lst=[]
     #Pour obtenir tous les prefixes, on va parcourir la longueur de la liste pour obtenir chaque bout
@@ -11,6 +15,10 @@ def pref(mot) :
     return lst
 
 def suf (mot) : 
+    """
+    >>> print(suf("coucou"))
+    ['coucou', 'oucou', 'ucou', 'cou', 'ou', 'u', '']
+    """
     #On initialise la liste qui va contenir les suffixes de mot 
     lstsuf=[]
     #On stocke la longueur de mot
@@ -22,6 +30,10 @@ def suf (mot) :
 
 
 def fact (mot) :
+    """
+    >>> print(fact("coucou"))
+    ['', 'c', 'co', 'cou', 'couc', 'couco', 'coucou', 'o', 'ou', 'ouc', 'ouco', 'oucou', 'u', 'uc', 'uco', 'ucou']
+    """
     #Va renvoyer l'ensemble des facteurs de mot
     lstfact=[]
     #On stocke la longueur du mot
@@ -35,16 +47,13 @@ def fact (mot) :
     return lstfact
 
 def miroir(mot):
-    #retourne le miroir de mot
-    miror=""
-    #On parcourt dans le sens inverse le mot caractère par caractère
-    for i in range(len(mot)-1, -1, -1):
-        #On ajoute chaque caractère au mot miror qui stocke le miroir
-        miror+=mot[i]
-    return miror
+    """
+    >>> print(miroir("coucou"))
+    uocuoc
+    """
+    return mot[::-1]
 
 if __name__=='__main__' : 
-    print(pref("coucou"))
-    print(suf("coucou"))
-    print(fact("coucou"))
-    print(miroir("coucou"))
+    import doctest
+    
+    doctest.testmod(verbose=1)

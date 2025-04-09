@@ -45,7 +45,7 @@ def puis(L, n):
 
 # 1.2.3
 # on ne peut pas faire une fonction calculant l'étoile d'un langage 
-# puisqu'il est impossible de représenté une infinitée de langage en python 
+# puisqu'il est impossible de représenter une infinitée de mots en python 
 
 def tousmots(A, n):
     """

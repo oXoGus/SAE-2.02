@@ -34,8 +34,8 @@ def deterministe(auto):
 def determinise(auto):
     """
     >>> auto2={"alphabet":['a','b'],"etats": [0,1], "transitions":[[0,'a',0],[0,'a',1],[1,'b',1],[1,'a',1]], "I":[0],"F":[1]}   
-    >>> print(determinise(auto2))
-    {'alphabet': ['a', 'b'], 'I': [[0]], 'transitions': [[[0], 'a', [0, 1]], [[0, 1], 'a', [0, 1]], [[0, 1], 'b', [1]], [[1], 'a', [1]], [[1], 'b', [1]]], 'etats': [[0], [0, 1], [1]], 'F': [[0, 1], [1]]}
+    >>> determinise(auto2) == renommage({'alphabet': ['a', 'b'], 'I': [[0]], 'transitions': [[[0], 'a', [0, 1]], [[0, 1], 'a', [0, 1]], [[0, 1], 'b', [1]], [[1], 'a', [1]], [[1], 'b', [1]]], 'etats': [[0], [0, 1], [1]], 'F': [[0, 1], [1]]})
+    True
     """
     
     # si l'auto est déja det 
@@ -185,7 +185,7 @@ if __name__ == "__main__":
 
     from genAuto import genAuto
 
-    #doctest.testmod(verbose=1)
+    doctest.testmod(verbose=1)
     
     
     auto0 ={"alphabet":['a','b'],"etats": [0,1,2,3], "transitions":[[0,'a',1],[1,'a',1],[1,'b',2],[2,'a',3]], "I":[0],"F":[3]}
@@ -198,4 +198,4 @@ if __name__ == "__main__":
 
     #print(renommage(determinise(auto2)))
 
-    print(deterministe(determinise(genAuto())))
+    #print(deterministe(determinise(genAuto())))

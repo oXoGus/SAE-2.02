@@ -1,5 +1,3 @@
-#Toutes les fonctions ont été vérifiées 
-
 
 def emonde (auto) :
     #Par définition, un automate est émondé uniquement s'il est accessible et coaccessible

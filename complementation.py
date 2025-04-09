@@ -1,10 +1,18 @@
 from determinisation import *
 
 def complet(auto) : 
-    """ Algorithme : 
-    On vérifie dans un premier temps avec un map que tous les états de la liste des etats apparaissent dans la transition
-    On fait ensuite une boucle for dans laquelle on vérifie grâce à un filter que chaque lettre contienne tout l'alphabet
-    S'ils ne sont pas tous dans l'alphabet, alors on s'arrête la et on return false, sinon on continue et à le fin on return true"""
+    """ 
+    >>> auto0 ={"alphabet":['a','b'],"etats": [0,1,2,3], "transitions":[[0,'a',1],[1,'a',1],[1,'b',2],[2,'a',3]], "I":[0],"F":[3]}
+    >>> auto1 ={"alphabet":['a','b'],"etats": [0,1], "transitions":[[0,'a',0],[0,'b',1],[1,'b',1],[1,'a',1]], "I":[0],"F":[1]}
+    >>> print(complet(auto0))
+    False
+    >>> print(complet(auto1))
+    True
+    """
+    
+    #On vérifie dans un premier temps avec un map que tous les états de la liste des etats apparaissent dans la transition
+    #On fait ensuite une boucle for dans laquelle on vérifie grâce à un filter que chaque lettre contienne tout l'alphabet
+    #S'ils ne sont pas tous dans l'alphabet, alors on s'arrête la et on return false, sinon on continue et à le fin on return true
     if all(list(map(lambda x, y: x==y, auto["transitions"][0], auto["etats"]))) : 
         return False 
     #Pour chaque etat 
@@ -22,11 +30,23 @@ def complet(auto) :
 
 
 def complete (auto) :
-    """Complète un automate rentré en paramètre
-    auto==> l'automate, prend la forme d'un dictionnaire, contenant les clés 'etats', 'transitions', 'alphabet', 'I', 'F' """
+
+    """
+    >>> auto0 ={"alphabet":['a','b'],"etats": [0,1,2,3], "transitions":[[0,'a',1],[1,'a',1],[1,'b',2],[2,'a',3]], "I":[0],"F":[3]}
+    >>> complete(auto0) == {'alphabet': ['a', 'b'], 'etats': [0, 1, 2, 3, 4], 'transitions': [[0, 'a', 1], [1, 'a', 1], [1, 'b', 2], [2, 'a', 3], [0, 'b', 4], [2, 'b', 4], [3, 'a', 4], [3, 'b', 4], [4, 'a', 4], [4, 'b', 4]], 'I': [0], 'F': [3]}
+    True
+    """
+
+
+    #Complète un automate rentré en paramètre
+    #auto==> l'automate, prend la forme d'un dictionnaire, contenant les clés 'etats', 'transitions', 'alphabet', 'I', 'F' 
+    
     if complet(auto) : 
         return auto
-    auto['etats'].append("puits")
+    
+    # l'état puis est l'état le plus grand + 1
+    puits = max(auto["etats"]) + 1
+    auto['etats'].append(puits)
     #Pour chaque état 
     for etat in auto['etats'] : 
         #Liste des lettres dont il faudra rajouter les transitions pour completer
@@ -39,13 +59,18 @@ def complete (auto) :
         if lst!=auto['alphabet'] :
             for lettre in auto['alphabet'] :
                 if lettre not in lst : 
-                    auto['transitions'].append((etat, lettre, "puits"))
+                    auto['transitions'].append([etat, lettre, puits])
     return auto
 
 def complement (auto) :
+    """
+    >>> auto3 = {"alphabet":['a','b'],"etats": [0,1,2,], "transitions":[[0,'a',1],[0,'a',0],[1,'b',2],[1,'b',1]], "I":[0],"F":[2]}
+    >>> complement(auto3) == {'alphabet': ['a', 'b'], 'etats': [0, 1, 2, 3], 'transitions': [[0, 'a', 1], [1, 'a', 1], [1, 'b', 2], [2, 'b', 2], [0, 'b', 3], [2, 'a', 3], [3, 'a', 3], [3, 'b', 3]], 'I': [0], 'F': [0, 1, 3]}
+    True
+    """
     detAuto=determinise(auto)
     detAuto=complete(detAuto)
-    compAuto={}
+    compAuto=dict()
     compAuto['alphabet']=detAuto['alphabet'].copy()
     compAuto['etats']=detAuto['etats'].copy()
     compAuto['transitions']=detAuto["transitions"].copy()
@@ -68,5 +93,6 @@ if __name__ == '__main__' :
     auto3 ={"alphabet":['a','b'],"etats": [0,1,2],
     "transitions":[[0,'a',1],[0,'a',0],[1,'b',2],[1,'b',1]], "I":[0],"F":[2]}
 
-
-    print("complet", complement(auto3))
+    import doctest
+    
+    doctest.testmod(verbose=1)
