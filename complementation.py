@@ -22,10 +22,10 @@ def complet(auto) :
         for transit in auto['transitions'] :
             if transit[0]==etat and transit[1] not in lst: 
                 lst.append(transit[1])
-        if lst!=auto['etats'] :
-            for lettre in auto['alphabet'] :
-                if lettre not in lst : 
-                    return False 
+
+        # on utilise les set pour que l'orde des étiquettes n'importe pas
+        if set(lst)!=set(auto['alphabet']):
+            return False 
     return True
 
 
@@ -46,6 +46,7 @@ def complete (auto) :
     
     # l'état puis est l'état le plus grand + 1
     puits = max(auto["etats"]) + 1
+
     auto['etats'].append(puits)
     #Pour chaque état 
     for etat in auto['etats'] : 
@@ -55,8 +56,9 @@ def complete (auto) :
         for transit in auto['transitions'] :
             if transit[0]==etat and transit[1] not in lst: 
                 lst.append(transit[1])
-        #Si la liste des 
-        if lst!=auto['alphabet'] :
+        
+        #Si il faut rajouter des transition vers le puits
+        if set(lst)!=set(auto['alphabet']):
             for lettre in auto['alphabet'] :
                 if lettre not in lst : 
                     auto['transitions'].append([etat, lettre, puits])
@@ -68,6 +70,7 @@ def complement (auto) :
     >>> complement(auto3) == {'alphabet': ['a', 'b'], 'etats': [0, 1, 2, 3], 'transitions': [[0, 'a', 1], [1, 'a', 1], [1, 'b', 2], [2, 'b', 2], [0, 'b', 3], [2, 'a', 3], [3, 'a', 3], [3, 'b', 3]], 'I': [0], 'F': [0, 1, 3]}
     True
     """
+    # on recréer un nouvel auto pour ne pas modifier celui donné en param
     detAuto=determinise(auto)
     detAuto=complete(detAuto)
     compAuto=dict()
@@ -76,9 +79,12 @@ def complement (auto) :
     compAuto['transitions']=detAuto["transitions"].copy()
     compAuto['I']=detAuto['I'].copy()
     lst=[]
-    for newFinaux in detAuto['etats'] : 
-        if newFinaux!=detAuto['F'][0]:
-            lst.append(newFinaux)
+
+    # les états non terminaux le devienent 
+    # et les états terminaux devienent non terminaux
+    for etat in detAuto['etats'] : 
+        if etat not in detAuto['F']:
+            lst.append(etat)
     compAuto['F']=lst
     return compAuto
 

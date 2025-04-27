@@ -1,8 +1,6 @@
 from determinisation import *
 from complementation import *
 from autoProduit import point
-import copy
-
 
 
 
@@ -59,9 +57,10 @@ def minimise(auto):
         
 
 def pointMinim(auto, etat, etiquette, nAuto):
+    """fonction de transition pour l'algo de minimisation"""
 
     # on prend le premier état de etat
-    # cela reient au meme grace a l'équivalence de Nérode
+    # cela revient au meme grace a l'équivalence de Nérode
     etat = etat[0]
 
     # on prend la classe de l'état pointé par l'étiquette
@@ -117,8 +116,9 @@ def calcNextClasse(prevClasses, auto):
         
 
 def calcNewClasse(classe, auto, prevClasses):
-    """renvoie uun dictionnaire avec comme clée 
-    un tuple contenant les num des classe pour les lettes de l'alphabet
+    """
+    renvoie la liste des valeur d'un dictionnaire avec comme clée 
+    un tuple contenant les num des classe pour chaque lettes de l'alphabet
     et comme valeur la liste de tout les états de la classe qui ont ces resultats la
     """
 
@@ -130,8 +130,7 @@ def calcNewClasse(classe, auto, prevClasses):
 
         for a in auto['alphabet']:
 
-            # on ajoute les numéro de classe des etat 
-            # ou mène les etiquettes
+            # on ajoute les numéro de classe des etat ou mène les etiquettes
             resLst.append(getNumClasse(prevClasses, point(auto, etat, a)))
         
         # on converti en tuple pour qu'elle puisse entre une clée du dict
@@ -144,7 +143,7 @@ def calcNewClasse(classe, auto, prevClasses):
             nClasse[res].append(etat)
 
     
-    # on revoi la liste de liste contenant tout les états qui ont le meme res
+    # on revoie la liste de liste contenant tout les états qui ont le meme res
     return list(nClasse.values())
         
 

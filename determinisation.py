@@ -9,7 +9,6 @@ def deterministe(auto):
     """
 
     # un auto est dét si 
-
     # il a 1 seul état inial 
     if len(auto['I']) != 1:
         return False
@@ -29,6 +28,64 @@ def deterministe(auto):
             return False
     
     return True
+
+
+def marquer(etatsActif : list, auto, autoDet):
+    """
+    prend un état 
+    un auto non déterministe
+    et un auto déterministe
+    
+    on teste tout tes transistions de l'état actif
+    on regroupe tout les transi partant de etatActif
+
+    revoit tout les état où va les transitions
+    pour append les états non marqué
+    pas besoin de prendre l'auto determiste modif puisque c'est les modif 
+    seront accessibles dans la fonc determise
+    """
+
+    # liste des états trouvé 
+    etatsTrouve = list()
+
+    # toutes les transi partant de l'état actif
+
+    # liste de toutes les transi partant des états dans etatsActif
+    transi = list()
+
+    # pour chaque etat 
+    for etat in etatsActif:
+        transi.extend(list(filter(lambda transi : transi[0] == etat, auto['transitions'])))
+    
+
+    # pour chaque lettre de l'alphabet
+    for a in auto['alphabet']:
+        
+        # liste des états qui sont 'pointé' par les transition d'étiquette a
+        etatsPointe = list(set(map(lambda transi: transi[2], filter(lambda transi: transi[1] == a, transi))))
+
+        # si il y a une ou plusieurs transi d'étiquette a
+        if len(etatsPointe) > 0:
+
+            # on ajoute la transition de etatsActif d'étiquette a et d'état pointé etatsPointe
+            autoDet['transitions'].append([etatsActif, a, etatsPointe])
+
+            if etatsPointe not in etatsTrouve:
+                etatsTrouve.append(etatsPointe)
+
+    
+    # on marque l'état en le mettant dans les états de l'auto det
+    autoDet['etats'].append(etatsActif)
+
+    # on ajoute l'état dans F si il contient un état F de l'auto original
+    
+    # si l'intersection n'est pas vide
+    if set(etatsActif).intersection(set(auto['F'])) != set(): 
+        autoDet['F'].append(etatsActif)
+
+    # on renvoit les état touvé pour les mettre dans étatsNonMarqué
+    return etatsTrouve
+
 
 
 def determinise(auto):
@@ -70,7 +127,7 @@ def determinise(auto):
     # tant qu'il reste des états non marqué
     while len(etatsNonMarque) > 0:
 
-        # on marque l'état active
+        # on marque l'état actif
         # en verifiant tout ces transistions possibles
 
         etatsTrouve = marquer(etatsNonMarque[0], auto, autoDet)
@@ -91,63 +148,7 @@ def determinise(auto):
     return renommage(autoDet)
 
 
-def marquer(etatsActif : list, auto, autoDet):
-    """
-    prend un état 
-    un auto non déterministe
-    et un auto déterministe
-    
-    on teste tout tes transistions de l'état actif
-    on regroupe tout les transi partant de etatActif
 
-    revoit tout les état où va les transitions
-    pour append les états non marqué
-    pas besoin de prendre l'auto determiste modif puisque c'est les modif 
-    seront accessibles dans la fonc determise
-    """
-
-    # liste des états trouvé 
-    etatsTrouve = list()
-
-    # toutes les transi partant de l'état actif
-
-    # liste de toutes les transi partant des états dans etatsActif
-    transi = list()
-
-    # pour chaque etat 
-    for etat in etatsActif:
-        transi.extend(list(filter(lambda transi : transi[0] == etat, auto['transitions'])))
-    
-
-    # pour chaque lettre de l'alphabet
-    for a in auto['alphabet']:
-        
-        # liste des états qui sont 'pointé' par les transition d'étiquette a
-        etatsPointe = list(set(map(lambda transi: transi[2], filter(lambda transi: transi[1] == a, transi))))
-
-        # si il y a un ou plusieurs transi d'étiquette a
-        if len(etatsPointe) > 0:
-
-            # on ajoute la transition de etatsActif d'étiquette a et d'état pointé etatsPointe
-            autoDet['transitions'].append([etatsActif, a, etatsPointe])
-
-            if etatsPointe not in etatsTrouve:
-                etatsTrouve.append(etatsPointe)
-
-    
-    # on marque l'état en le mettant dans les états de l'auto det
-    autoDet['etats'].append(etatsActif)
-
-    # on ajoute l'état dans F si il contient un état F de l'auto original
-    
-    # si l'intersection n'est pas vide
-    if set(etatsActif).intersection(set(auto['F'])) != set(): 
-        autoDet['F'].append(etatsActif)
-
-    # on renvoit les état touvé pour les mettre dans étatsNonMarqué
-    return etatsTrouve
-    
-    
 def renommage(auto):
     
     # on utilise un dict en tant que table de correspondance
